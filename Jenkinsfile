@@ -1,31 +1,25 @@
-pipeline {
-    agent any
-    stages {
-        stage('Cloner le dépôt') {
-            steps {
-                script {
-                    echo "Cloning repository..."
-                    git branch: 'main', url: 'https://github.com/PoPoGH/agile-devops.git'
-                }
-            }
-        }
-        stage('Construire Docker Image') {
-            steps {
-                script {
-                    echo "Building Docker image..."
-                    sh 'docker build -t monsite-html .'
-                    echo "Docker build completed."
-                }
-            }
-        }
-        stage('Déployer sur le serveur') {
-            steps {
-                script {
-                    echo "Deploying on server..."
-                    sh 'docker run -d -p 80:80 monsite-html'
-                    echo "Deployment completed."
-                }
-            }
-        }
+node {
+    stage('Cloner le dépôt') {
+        // Cloner le dépôt Git
+        checkout scm
+    }
+
+    stage('Copier le fichier') {
+        // Copier le fichier sur le serveur de destination
+        sshPublisher(
+            publishers: [
+                sshPublisherDesc(
+                    configName: 'ubuntu',  // Assurez-vous que ceci correspond au nom de configuration SSH dans Jenkins
+                    transfers: [
+                        sshTransfer(
+                            sourceFiles: 'index.html',
+                            removePrefix: '',
+                            remoteDirectory: '/var/www/html',
+                            execCommand: 'echo "Déploiement terminé"'
+                        )
+                    ]
+                )
+            ]
+        )
     }
 }
