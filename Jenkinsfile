@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git 'https://github.com/PoPoGH/agile-devops.git'
+                git branch: 'main', url: 'https://github.com/PoPoGH/agile-devops.git'
             }
         }
         stage('Construire Docker Image') {
