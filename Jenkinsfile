@@ -14,7 +14,7 @@ node {
                         sshTransfer(
                             sourceFiles: 'index.html',
                             removePrefix: '',
-                            remoteDirectory: '/var/www/html',
+                            remoteDirectory: '/',
                             execCommand: 'echo "Déploiement terminé"'
                         )
                     ]
